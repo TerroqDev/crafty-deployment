@@ -1,0 +1,6 @@
+[submodule "crafty-ui"]
+	path = crafty-ui
+	url = ../crafty-ui/
+[submodule "crafty-service"]
+	path = crafty-service
+	url = ../crafty-service/
