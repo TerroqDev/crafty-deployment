@@ -22,7 +22,7 @@ jobs:
         repository: TerroqDev/crafty-ui
         ref: master
         token: ${{ secrets.GITHUB_TOKEN }}
-        path: frontend
+        path: crafty-ui
 
     - name: Checkout backend repo (master branch)
       uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
         repository: TerroqDev/crafty-service
         ref: master
         token: ${{ secrets.GITHUB_TOKEN }}
-        path: backend
+        path: crafty-service
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
