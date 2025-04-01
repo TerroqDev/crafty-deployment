@@ -2,7 +2,7 @@ services:
   crafty-service:
     build:
       context: ./crafty-service
-      dockerfile: Dockerfile
+      dockerfile: ./crafty-service/Dockerfile
     environment:
       APP_ENV: ${APP_ENV}
       DB_USER: ${DB_USER}
@@ -42,7 +42,7 @@ services:
   crafty-ui:
     build:
       context: ./crafty-ui
-      dockerfile: Dockerfile
+      dockerfile: ./crafty-ui/Dockerfile
     ports:
       - "80:80"
     networks:
