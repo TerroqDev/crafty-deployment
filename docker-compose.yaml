@@ -1,0 +1,50 @@
+services:
+  crafty-service:
+    build:
+      context: ../crafty-service
+      dockerfile: Dockerfile
+    environment:
+      APP_ENV: ${APP_ENV}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DATABASE_URL: mysql+pymysql://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}
+      COOLIFY_URL: https://crafty.why-ai.net:4000
+      COOLIFY_FQDN: crafty.why-ai.net:4000
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    entrypoint: ["wait-for-it", "db:${DB_PORT}", "--", "poetry", "run", "crafty"]
+    networks:
+      - crafty_network
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    networks:
+      - crafty_network
+    volumes:
+      - db_data:/var/lib/mysql
+
+  crafty-ui:
+    build:
+      context: ../crafty-ui
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - crafty_network
+
+networks:
+  crafty_network:
+    driver: bridge
+
+volumes:
+  db_data:

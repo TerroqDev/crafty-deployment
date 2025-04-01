@@ -1,0 +1,40 @@
+name: Crafty Deployment
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout main repo (Deployment Repository)
+      uses: actions/checkout@v2
+
+    - name: List files in frontend repo
+      run: ls -la frontend
+
+    - name: Checkout frontend repo (master branch)
+      uses: actions/checkout@v2
+      with:
+        repository: TerroqDev/crafty-ui
+        ref: master
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: frontend
+
+    - name: Checkout backend repo (master branch)
+      uses: actions/checkout@v2
+      with:
+        repository: TerroqDev/crafty-service
+        ref: master
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: backend
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build and run Docker containers
+      run: |
+        docker-compose -f docker-compose.yaml up --build -d
