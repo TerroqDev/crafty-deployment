@@ -1,7 +1,7 @@
 services:
   crafty-service:
     build:
-      context: ../crafty-service
+      context: ./crafty-service
       dockerfile: Dockerfile
     environment:
       APP_ENV: ${APP_ENV}
@@ -35,7 +35,7 @@ services:
 
   crafty-ui:
     build:
-      context: ../crafty-ui
+      context: ./crafty-ui
       dockerfile: Dockerfile
     ports:
       - "80:80"
