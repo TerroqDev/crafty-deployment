@@ -3,6 +3,8 @@ services:
     build:
       context: ./crafty-service
       dockerfile: Dockerfile
+      args:
+        SKIP_SUBMODULES: "true"
     environment:
       APP_ENV: ${APP_ENV}
       DB_USER: ${DB_USER}
@@ -43,6 +45,8 @@ services:
     build:
       context: ./crafty-ui
       dockerfile: Dockerfile
+      args:
+        SKIP_SUBMODULES: "true"
     ports:
       - "80:80"
     networks:
