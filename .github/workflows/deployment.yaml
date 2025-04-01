@@ -13,9 +13,6 @@ jobs:
     - name: Checkout main repo (Deployment Repository)
       uses: actions/checkout@v2
 
-    - name: List files in frontend repo
-      run: ls -la frontend
-
     - name: Checkout frontend repo (master branch)
       uses: actions/checkout@v2
       with:
@@ -31,15 +28,6 @@ jobs:
         ref: master
         token: ${{ secrets.GITHUB_TOKEN }}
         path: crafty-service
-
-    - name: Verify repositories are cloned
-      run: |
-        echo "Listing contents of the root directory:"
-        ls -la
-        echo "Listing contents of crafty-ui directory:"
-        ls -la crafty-ui
-        echo "Listing contents of crafty-service directory:"
-        ls -la crafty-service
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
