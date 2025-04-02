@@ -14,7 +14,6 @@ services:
       DATABASE_URL: mysql+pymysql://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}
       COOLIFY_URL: https://crafty.why-ai.net:4000
       COOLIFY_FQDN: crafty.why-ai.net:4000
-      LOG_LEVEL: debug
     ports:
       - "4000:4000"
     depends_on:
@@ -22,11 +21,6 @@ services:
     entrypoint: ["wait-for-it", "db:${DB_PORT}", "--", "poetry", "run", "crafty"]
     networks:
       - crafty_network
-    logging:
-      driver: "json-file"  # The default log driver
-      options:
-        max-size: "10m"  # Maximum log file size before it is rotated
-        max-file: "3"    # Number of log files to keep
 
   db:
     image: mysql:8
@@ -48,16 +42,9 @@ services:
       args:
         SKIP_SUBMODULES: "true"
     ports:
-      - "80:80"
+      - "8000:80"
     networks:
       - crafty_network
-    environment:
-      - LOG_LEVEL=debug  # Set your desired log level
-    logging:
-      driver: "json-file"  # The default log driver
-      options:
-        max-size: "10m"  # Maximum log file size before it is rotated
-        max-file: "3"    # Number of log files to keep
 
 networks:
   crafty_network:
