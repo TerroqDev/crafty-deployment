@@ -3,8 +3,6 @@ services:
     build:
       context: ./crafty-service
       dockerfile: Dockerfile
-      args:
-        SKIP_SUBMODULES: "true"
     environment:
       APP_ENV: ${APP_ENV}
       DB_USER: ${DB_USER}
@@ -44,7 +42,8 @@ services:
     environment:
       COOLIFY_URL: https://crafty.why-ai.net:8000
       COOLIFY_FQDN: crafty.why-ai.net:8000
-      BACKEND_URL: http://crafty-service:4000
+    ports:
+      - "8000:80"
     networks:
       - crafty_network
 
