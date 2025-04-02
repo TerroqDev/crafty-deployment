@@ -44,6 +44,7 @@ services:
     environment:
       COOLIFY_URL: https://crafty.why-ai.net:8000
       COOLIFY_FQDN: crafty.why-ai.net:8000
+      BACKEND_URL: http://crafty-service:4000
     networks:
       - crafty_network
 
