@@ -1,8 +1,73 @@
+version: "3.8"
+
 services:
+  crafty-ui:
+    build:
+      context: ./crafty-ui
+      dockerfile: Dockerfile
+    container_name: crafty-ui-2025
+    ports:
+      - '8008:80'  # Adjust port mapping based on your container setup
+    environment:
+      COOLIFY_URL: 'https://crafty.why-ai.net:8008'
+      COOLIFY_FQDN: 'crafty.why-ai.net:8008'
+    depends_on:
+      db:
+        condition: service_healthy
+    command: "sh -c \"streamlit run app.py --server.port 80 --server.enableCORS false --server.enableXsrfProtection false\""  # Adjust this if needed
+    restart: unless-stopped
+    labels:
+      - coolify.managed=true
+      - coolify.version=4.0.0-beta.404
+      - coolify.applicationId=1
+      - coolify.type=application
+      - coolify.name=crafty-ui
+      - coolify.projectName=crafty-ui-project
+      - coolify.serviceName=crafty-ui
+      - coolify.environmentName=production
+      - coolify.pullRequestId=0
+      - traefik.enable=true
+      - traefik.http.middlewares.gzip.compress=true
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.http-0-crafty-ui.entryPoints=http
+      - traefik.http.routers.http-0-crafty-ui.middlewares=redirect-to-https
+      - 'traefik.http.routers.http-0-crafty-ui.rule=Host(`crafty.why-ai.net`) && PathPrefix(`/`)'
+      - traefik.http.routers.http-0-crafty-ui.service=http-0-crafty-ui
+      - traefik.http.routers.https-0-crafty-ui.entryPoints=https
+      - traefik.http.routers.https-0-crafty-ui.middlewares=gzip
+      - 'traefik.http.routers.https-0-crafty-ui.rule=Host(`crafty.why-ai.net`) && PathPrefix(`/`)'
+      - traefik.http.routers.https-0-crafty-ui.service=https-0-crafty-ui
+      - traefik.http.routers.https-0-crafty-ui.tls.certresolver=letsencrypt
+      - traefik.http.routers.https-0-crafty-ui.tls=true
+      - traefik.http.services.http-0-crafty-ui.loadbalancer.server.port=80
+      - traefik.http.services.https-0-crafty-ui.loadbalancer.server.port=80
+    networks:
+      - crafty_network
+      - traefik
+
+  db:
+    image: mysql:8
+    container_name: db-2025
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--host", "localhost"]
+      interval: 10s
+      retries: 3
+    networks:
+      - crafty_network
+      - traefik
+    restart: unless-stopped
+
   crafty-service:
     build:
       context: ./crafty-service
       dockerfile: Dockerfile
+    container_name: crafty-service-2025
     environment:
       APP_ENV: ${APP_ENV}
       DB_USER: ${DB_USER}
@@ -17,48 +82,16 @@ services:
     depends_on:
       - db
     entrypoint: ["wait-for-it", "db:${DB_PORT}", "--", "poetry", "run", "crafty"]
-    networks:
-      - crafty_network
-      - traefik
+    restart: unless-stopped
     labels:
       - traefik.enable=true
       - traefik.http.routers.crafty-service.rule=Host(`crafty-service.why-ai.net`)
-      - traefik.http.routers.crafty-service.entrypoints=web
+      - traefik.http.routers.crafty-service.entrypoints=websecure
+      - traefik.http.routers.crafty-service.tls=true
       - traefik.http.services.crafty-service.loadbalancer.server.port=4000
-
-  db:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
     networks:
       - crafty_network
       - traefik
-    volumes:
-      - db_data:/var/lib/mysql
-
-  crafty-ui:
-    build:
-      context: ./crafty-ui
-      dockerfile: Dockerfile
-      args:
-        SKIP_SUBMODULES: "true"
-    environment:
-      COOLIFY_URL: http://crafty.why-ai.net:8008
-      COOLIFY_FQDN: crafty.why-ai.net:8008
-    ports:
-      - "8008:80"
-    networks:
-      - crafty_network
-      - traefik
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.crafty-ui.rule=Host(`crafty.why-ai.net`)
-      - traefik.http.routers.crafty-ui.entrypoints=web
-      - traefik.http.services.crafty-ui.loadbalancer.server.port=80
 
 networks:
   crafty_network:
