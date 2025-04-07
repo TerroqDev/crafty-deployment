@@ -22,10 +22,11 @@ services:
       - traefik
     labels:
       - traefik.enable=true
-      - traefik.http.routers.crafty-service-router.rule=Host(`crafty-service.why-ai.net`)
-      - traefik.http.routers.crafty-service-router.entrypoints=websecure
-      - traefik.http.routers.crafty-service-router.tls=true
-      - traefik.http.services.crafty-service.loadbalancer.server.port=4000
+      - traefik.http.routers.crafty-service.rule=Host(`crafty-service.why-ai.net`)
+      - traefik.http.routers.crafty-service.entrypoints=websecure
+      - traefik.http.routers.crafty-service.tls=true
+      - traefik.http.routers.crafty-service.service=crafty-service-svc
+      - traefik.http.services.crafty-service-svc.loadbalancer.server.port=4000
 
   db:
     image: mysql:8
@@ -57,10 +58,11 @@ services:
       - traefik
     labels:
       - traefik.enable=true
-      - traefik.http.routers.crafty-ui-router.rule=Host(`crafty.why-ai.net`)
-      - traefik.http.routers.crafty-ui-router.entrypoints=websecure
-      - traefik.http.routers.crafty-ui-router.tls=true
-      - traefik.http.services.crafty-ui.loadbalancer.server.port=80
+      - traefik.http.routers.crafty-ui.rule=Host(`crafty.why-ai.net`)
+      - traefik.http.routers.crafty-ui.entrypoints=websecure
+      - traefik.http.routers.crafty-ui.tls=true
+      - traefik.http.routers.crafty-ui.service=crafty-ui-svc
+      - traefik.http.services.crafty-ui-svc.loadbalancer.server.port=80
 
 networks:
   crafty_network:
