@@ -10,7 +10,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_PORT: ${DB_PORT}
       DATABASE_URL: mysql+pymysql://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}
-      COOLIFY_URL: https://crafty-service:4000
+      COOLIFY_URL: http://crafty-service:4000
       COOLIFY_FQDN: crafty-service:4000
     ports:
       - "4000:4000"
@@ -40,7 +40,7 @@ services:
       args:
         SKIP_SUBMODULES: "true"
     environment:
-      COOLIFY_URL: https://crafty.why-ai.net:8008
+      COOLIFY_URL: http://crafty.why-ai.net:8008
       COOLIFY_FQDN: crafty.why-ai.net:8008
     ports:
       - "8008:80"
