@@ -19,6 +19,7 @@ services:
     entrypoint: ["wait-for-it", "db:${DB_PORT}", "--", "poetry", "run", "crafty"]
     networks:
       - crafty_network
+      - traefik
     labels:
       - traefik.enable=true
       - traefik.http.routers.crafty-service.rule=Host(`crafty-service.why-ai.net`)
@@ -36,6 +37,7 @@ services:
       - "${DB_PORT}:${DB_PORT}"
     networks:
       - crafty_network
+      - traefik
     volumes:
       - db_data:/var/lib/mysql
 
@@ -52,6 +54,7 @@ services:
       - "8008:80"
     networks:
       - crafty_network
+      - traefik
     labels:
       - traefik.enable=true
       - traefik.http.routers.crafty-ui.rule=Host(`crafty.why-ai.net`)
@@ -62,6 +65,8 @@ services:
 networks:
   crafty_network:
     driver: bridge
+  traefik:
+    external: true
 
 volumes:
   db_data:
