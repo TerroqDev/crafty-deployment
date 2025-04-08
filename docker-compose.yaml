@@ -20,9 +20,14 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.crafty-service.rule=Host(`crafty-service.why-ai.net`)"
-      - "traefik.http.routers.crafty-service.entrypoints=https"
-      - "traefik.http.routers.crafty-service.tls.certresolver=letsencrypt"
+      # HTTP Router
+      - "traefik.http.routers.crafty-service-http.rule=Host(`crafty-service.why-ai.net`)"
+      - "traefik.http.routers.crafty-service-http.entrypoints=http"
+      - "traefik.http.services.crafty-service.loadbalancer.server.port=4000"
+      # HTTPS Router
+      - "traefik.http.routers.crafty-service-https.rule=Host(`crafty-service.why-ai.net`)"
+      - "traefik.http.routers.crafty-service-https.entrypoints=https"
+      - "traefik.http.routers.crafty-service-https.tls.certresolver=letsencrypt"
       - "traefik.http.services.crafty-service.loadbalancer.server.port=4000"
 
   db:
@@ -52,9 +57,14 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.crafty-ui.rule=Host(`crafty.why-ai.net`)"
-      - "traefik.http.routers.crafty-ui.entrypoints=https"
-      - "traefik.http.routers.crafty-ui.tls.certresolver=letsencrypt"
+      # HTTP Router
+      - "traefik.http.routers.crafty-ui-http.rule=Host(`crafty.why-ai.net`)"
+      - "traefik.http.routers.crafty-ui-http.entrypoints=http"
+      - "traefik.http.services.crafty-ui-service.loadbalancer.server.port=80"
+      # HTTPS Router
+      - "traefik.http.routers.crafty-ui-https.rule=Host(`crafty.why-ai.net`)"
+      - "traefik.http.routers.crafty-ui-https.entrypoints=https"
+      - "traefik.http.routers.crafty-ui-https.tls.certresolver=letsencrypt"
       - "traefik.http.services.crafty-ui-service.loadbalancer.server.port=80"
 
 networks:
