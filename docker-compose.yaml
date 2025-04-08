@@ -17,16 +17,7 @@ services:
     entrypoint: ["wait-for-it", "db:${DB_PORT}", "--", "poetry", "run", "crafty"]
     networks:
       - crafty_network
-      - traefik
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.crafty-service-http.rule=Host(`crafty-service.why-ai.net`)"
-      - "traefik.http.routers.crafty-service-http.entrypoints=http"
-      - "traefik.http.services.crafty-service.loadbalancer.server.port=4000"
-      - "traefik.http.routers.crafty-service-https.rule=Host(`crafty-service.why-ai.net`)"
-      - "traefik.http.routers.crafty-service-https.entrypoints=https"
-      - "traefik.http.routers.crafty-service-https.tls.certresolver=letsencrypt"
-      - "traefik.http.services.crafty-service.loadbalancer.server.port=4000"     
+      - traefik 
 
   db:
     image: mysql:8
@@ -53,15 +44,6 @@ services:
     networks:
       - crafty_network
       - traefik
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.crafty-ui-http.rule=Host(`crafty.why-ai.net`)"
-      - "traefik.http.routers.crafty-ui-http.entrypoints=http"
-      - "traefik.http.services.crafty-ui.loadbalancer.server.port=80"
-      - "traefik.http.routers.crafty-ui-https.rule=Host(`crafty.why-ai.net`)"
-      - "traefik.http.routers.crafty-ui-https.entrypoints=https"
-      - "traefik.http.routers.crafty-ui-https.tls.certresolver=letsencrypt"
-      - "traefik.http.services.crafty-ui.loadbalancer.server.port=80"
 
 networks:
   crafty_network:
