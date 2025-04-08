@@ -21,6 +21,7 @@ services:
     labels:
       - "traefik.enable=true"
       # Define the HTTP entrypoint and router explicitly
+      - "traefik.http.router.crafty-service.service=crafty-service"
       - "traefik.http.routers.crafty-service-http.entrypoints=http"
       - "traefik.http.routers.crafty-service-http.rule=Host(`crafty-service.why-ai.net`)"
       - "traefik.http.services.crafty-service.loadbalancer.server.port=4000"
@@ -58,6 +59,7 @@ services:
     labels:
       - "traefik.enable=true"
       # Define the HTTP entrypoint and router explicitly
+      - "traefik.http.router.crafty-ui.service=crafty-ui"
       - "traefik.http.routers.crafty-ui-http.entrypoints=http"
       - "traefik.http.routers.crafty-ui-http.rule=Host(`crafty.why-ai.net`)"
       - "traefik.http.services.crafty-ui-service.loadbalancer.server.port=80"
